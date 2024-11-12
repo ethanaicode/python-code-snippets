@@ -1,6 +1,7 @@
 from moviepy.editor import VideoFileClip
 import numpy as np
 
+# 定义一个函数用于镜像翻转视频
 def flip_video(input_path, output_path):
     # 加载视频文件
     video = VideoFileClip(input_path)
