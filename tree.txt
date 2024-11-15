@@ -1,0 +1,57 @@
+├─📁 tools
+│ ├─📄 video_moviepy_extract_audio.py
+│ ├─📄 tree_config.xml
+│ ├─📄 video_moviepy_mirror.py
+│ ├─📄 create_dir_tree.py
+│ └─📄 tools.md
+├─📁 app
+│ ├─📁 config
+│ │ └─📄 settings.json
+│ ├─📁 sources
+│ │ ├─📁 images
+│ │ │ └─📄 python.png
+├─📁 tests
+│ ├─📄 test_basic.py
+│ ├─📄 test_threading.py
+│ └─📄 test_selenium.py
+├─📁 samples
+│ ├─📁 components
+│ │ ├─📄 login_window.py
+│ │ ├─📄 qr_code_widow.py
+│ │ └─📄 activation_window.py
+│ ├─📁 assets
+│ │ ├─📁 images
+│ │ │ ├─📄 avatar.jpg
+│ │ │ └─📄 media_qr_code.jpg
+│ │ ├─📁 icons
+│ │ │ └─📄 qrcode.svg
+│ ├─📄 sample_pyinstaller_runtime_path.py
+│ ├─📄 sample_pyqt5_date_range_selector.py
+│ ├─📄 sample_singleton.py
+│ ├─📄 sample_pyqt5_gradient.py
+│ ├─📄 sample_threading.py
+│ ├─📄 sample_requests_logined.py
+│ ├─📄 sample_selenium_click_cookies.py
+│ ├─📄 sample_queue.py
+│ ├─📄 preview_tkinter_cursors.py
+│ ├─📄 sample_pillow.py
+│ ├─📄 sample_requests_batch_dl.py
+│ ├─📄 sample_pyqt5_avatar.py
+│ ├─📄 sample_range.py
+│ ├─📄 samples_pyqt5_pic_frame_playback.py
+│ ├─📄 sample_pyqt5_login_switcher.py
+│ ├─📄 sample_sys.py
+│ ├─📄 sample_tkinter_feet2meters.py
+│ ├─📄 sample_abc.py
+│ ├─📄 sample_requests_douban.py
+│ └─📄 sample_pyqt5_radius_Qpainter.py
+├─📁 data
+│ ├─📄 video.mp4
+│ └─📄 中二班 秋天的礼物.mp3
+├─📁 assets
+│ ├─📁 images
+│ │ └─📄 doubao.ico
+│ └─📄 ai_list.json
+├─📄 requirements.txt
+├─📄 README.md
+└─📄 main.py
