@@ -6,4 +6,12 @@
 
 - [音频提取](video_moviepy_extract_audio.py)：从视频中提取音频。
 
-- [视频镜像](video_moviepy_mirror.py)：将视频水平镜像。
+- [视频编辑](video_moviepy_edit_video.py)：视频剪辑、合并、添加音频等。
+
+  - **add_watermark**：给视频添加水印
+
+  - **crop_video**：裁剪视频到指定区域
+
+  - **trim_video**：截取视频片段
+
+  - **flip_video**：镜像翻转视频
