@@ -1,6 +1,6 @@
 from baidusearch.baidusearch import search
-results = search('今天天气如何', num_results=20)
-print(results)
+results = search('为什么小马哥不爱我', num_results=10)
+# print(results)
 # 格式化下返回结果
 for result in results:
     print(f"标题: {result['title']}")
