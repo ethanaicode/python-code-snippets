@@ -95,4 +95,5 @@ input_video = './data/input_video.mp4'
 output_video = './data/output_video.mp4'
 watermark = './data/video_watermark.png'
 position = ('left', 'top')
-add_watermark(input_video, output_video, watermark, position)
+# add_watermark(input_video, output_video, watermark, position)
+flip_video(input_video, output_video)
