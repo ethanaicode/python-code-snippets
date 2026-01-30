@@ -15,7 +15,20 @@ from urllib.parse import urlencode
 
 
 class Colors:
-    """终端颜色常量"""
+    """终端颜色常量
+    
+    ANSI转义序列格式: \033[{code}m
+    - \033 是ESC转义字符（八进制）
+    - [code] 是颜色/样式代码
+    - m 是结束标记
+    
+    常用代码:
+    - 0m: 重置
+    - 1m: 粗体
+    - 30-37: 标准前景色
+    - 90-97: 高亮前景色
+    - 38;2;R;G;B: 24位真彩色（RGB模式）
+    """
     RESET = '\033[0m'
     BOLD = '\033[1m'
     RED = '\033[91m'
@@ -25,7 +38,7 @@ class Colors:
     MAGENTA = '\033[95m'
     CYAN = '\033[96m'
     WHITE = '\033[97m'
-    GRAY = '\033[37m'  # 更亮的灰色，在终端中更易读
+    GRAY = '\033[38;2;88;110;117m'  # #586E75 - Solarized base01
 
 
 class HTTPClient:
@@ -159,7 +172,7 @@ class ResponsePrinter:
             print(f"\n{Colors.RED}{Colors.BOLD}✗ 请求失败{Colors.RESET}")
             print(f"{Colors.RED}错误类型: {response['error']}{Colors.RESET}")
             print(f"{Colors.RED}错误信息: {response['message']}{Colors.RESET}")
-            print(f"{Colors.WHITE}耗时: {response['elapsed_ms']:.2f} ms{Colors.RESET}")
+            print(f"{Colors.GRAY}耗时: {response['elapsed_ms']:.2f} ms{Colors.RESET}")
             return
         
         # 状态码颜色
@@ -176,8 +189,8 @@ class ResponsePrinter:
         
         # 打印状态行
         print(f"\n{status_color}{Colors.BOLD}{status_icon} {status_code} {response['status_text']}{Colors.RESET}")
-        print(f"{Colors.WHITE}耗时: {response['elapsed_ms']:.2f} ms{Colors.RESET}")
-        print(f"{Colors.WHITE}URL: {response['url']}{Colors.RESET}")
+        print(f"{Colors.GRAY}耗时: {response['elapsed_ms']:.2f} ms{Colors.RESET}")
+        print(f"{Colors.GRAY}URL: {response['url']}{Colors.RESET}")
         
         # 打印响应头（仅verbose模式）
         if verbose:
@@ -335,13 +348,13 @@ def main():
     # 打印请求信息
     print(f"\n{Colors.BOLD}{Colors.CYAN}➜ {args.method} {args.url}{Colors.RESET}")
     if headers:
-        print(f"{Colors.WHITE}请求头: {headers}{Colors.RESET}")
+        print(f"{Colors.GRAY}请求头: {headers}{Colors.RESET}")
     if params:
-        print(f"{Colors.WHITE}查询参数: {params}{Colors.RESET}")
+        print(f"{Colors.GRAY}查询参数: {params}{Colors.RESET}")
     if args.data:
-        print(f"{Colors.WHITE}请求体: {args.data[:100]}{'...' if len(args.data) > 100 else ''}{Colors.RESET}")
+        print(f"{Colors.GRAY}请求体: {args.data[:100]}{'...' if len(args.data) > 100 else ''}{Colors.RESET}")
     elif args.body_file:
-        print(f"{Colors.WHITE}请求体文件: {args.body_file}{Colors.RESET}")
+        print(f"{Colors.GRAY}请求体文件: {args.body_file}{Colors.RESET}")
     
     # 保存配置
     if args.save:
