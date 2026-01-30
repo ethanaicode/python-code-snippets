@@ -129,9 +129,20 @@ class HTTPClient:
                 response_body = response.text
                 content_type = 'text'
             
+            # 处理状态文本的编码问题
+            status_text = response.reason
+            if status_text:
+                # 尝试修复编码问题：如果是Latin-1错误编码的UTF-8文本
+                try:
+                    # 检测是否是Latin-1编码的UTF-8字符串
+                    status_text = status_text.encode('latin-1').decode('utf-8')
+                except (UnicodeDecodeError, UnicodeEncodeError, AttributeError):
+                    # 如果转换失败，保持原样
+                    pass
+            
             return {
                 'status_code': response.status_code,
-                'status_text': response.reason,
+                'status_text': status_text or 'No Status Text',
                 'elapsed_ms': elapsed_ms,
                 'headers': dict(response.headers),
                 'body': response_body,
