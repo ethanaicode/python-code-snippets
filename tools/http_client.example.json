@@ -1,0 +1,17 @@
+{
+  "method": "POST",
+  "url": "https://api.example.com/users",
+  "headers": [
+    "Content-Type:application/json",
+    "Authorization:Bearer your_token_here",
+    "User-Agent:MyApp/1.0"
+  ],
+  "params": [
+    "page:1",
+    "limit:20",
+    "sort:created_at"
+  ],
+  "data": "{\"username\":\"admin\",\"email\":\"admin@example.com\",\"role\":\"admin\"}",
+  "body_file": null,
+  "timeout": 30
+}

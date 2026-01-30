@@ -6,3 +6,4 @@ logs
 runtime
 data/*
 !data/.gitkeep
+tools/*.live.*
