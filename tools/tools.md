@@ -117,3 +117,17 @@
   - **trim_video**：截取视频片段
 
   - **flip_video**：镜像翻转视频
+
+- [图片编辑](image_pillow_edit_image.py)：图片加水印与裁剪。
+
+  - **add_watermark**：给图片添加水印
+
+  - **crop_image**：按坐标裁剪图片
+
+  - **crop_left_right_black_borders**：裁掉左右黑边（默认每边 40px）
+
+  **使用示例：**
+  ```bash
+  # 按当前需求裁掉左右黑边（每边 40px）
+  python tools/image_pillow_edit_image.py
+  ```
