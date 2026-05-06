@@ -102,8 +102,8 @@ def crop_left_right_black_borders(input_path, output_path, border_width=140):
 
 
 # 调用函数（按照自己的需求修改参数，并调用相应函数）
-input_image = "/Volumes/17621233690/waveya/waveya.patreon/review/WV20260425_1186529311/WV20260425_1186529311_9.jpg"
-output_image = "/Volumes/17621233690/waveya/waveya.patreon/review/WV20260425_1186529311/WV20260425_1186529311_9_cropped.jpg"
+input_image = "./data/input_image.jpg"
+output_image = "./data/output_image_cropped.jpg"
 watermark_image = "./data/image_watermark.png"
 
 # 当前需求：裁掉左右黑边，每边约 40px
