@@ -1,0 +1,15 @@
+{
+  "method": "POST",
+  "url": "https://httpbin.org/post",
+  "headers": [],
+  "params": [],
+  "data": null,
+  "body_file": null,
+  "form": [
+    "name:copilot",
+    "env:dev",
+    "version:1.0"
+  ],
+  "form_files": [],
+  "timeout": 30
+}

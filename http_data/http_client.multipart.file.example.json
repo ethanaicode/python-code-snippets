@@ -1,0 +1,16 @@
+{
+  "method": "POST",
+  "url": "https://httpbin.org/post",
+  "headers": [],
+  "params": [],
+  "data": null,
+  "body_file": null,
+  "form": [
+    "meta:upload-from-config",
+    "source:python-code-snippets"
+  ],
+  "form_files": [
+    "file:tools/http_client.py"
+  ],
+  "timeout": 30
+}

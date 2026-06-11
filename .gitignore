@@ -6,6 +6,7 @@ logs
 runtime
 data/*
 !data/.gitkeep
-tools/*.live.*
 downloads/*
 !downloads/.gitkeep
+# Ignore all files in the http_data directory except those that match the pattern *.live.*
+http_data/**/*.live.*

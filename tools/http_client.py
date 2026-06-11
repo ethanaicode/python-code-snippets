@@ -11,7 +11,6 @@ import sys
 import time
 from pathlib import Path
 from typing import Dict, Any, Optional
-from urllib.parse import urlencode
 
 
 class Colors:
@@ -57,7 +56,9 @@ class HTTPClient:
         headers: Optional[Dict[str, str]] = None,
         params: Optional[Dict[str, str]] = None,
         body: Any = None,
-        body_file: Optional[str] = None
+        body_file: Optional[str] = None,
+        form: Optional[Dict[str, str]] = None,
+        form_files: Optional[Dict[str, str]] = None
     ) -> Dict[str, Any]:
         """
         发送HTTP请求
@@ -69,6 +70,8 @@ class HTTPClient:
             params: 查询参数
             body: 请求体（字符串或字典）
             body_file: 请求体文件路径
+            form: multipart/form-data 表单字段
+            form_files: multipart/form-data 文件字段，格式 {字段名: 文件路径}
         
         Returns:
             包含响应信息的字典
@@ -87,6 +90,7 @@ class HTTPClient:
         
         # 记录开始时间
         start_time = time.time()
+        opened_files = []
         
         try:
             # 准备请求参数
@@ -102,8 +106,24 @@ class HTTPClient:
             if params:
                 kwargs['params'] = params
             
-            # 处理请求体
-            if body is not None:
+            # multipart/form-data 优先级高于普通 body
+            if form or form_files:
+                kwargs['data'] = form or {}
+
+                if form_files:
+                    files_payload = {}
+                    for field_name, file_path in form_files.items():
+                        path_obj = Path(file_path)
+                        if not path_obj.exists():
+                            raise FileNotFoundError(f"文件不存在: {file_path}")
+
+                        file_handle = open(path_obj, 'rb')
+                        opened_files.append(file_handle)
+                        files_payload[field_name] = (path_obj.name, file_handle)
+
+                    kwargs['files'] = files_payload
+            # 处理普通请求体
+            elif body is not None:
                 if isinstance(body, dict):
                     kwargs['json'] = body
                 elif isinstance(body, str):
@@ -169,6 +189,9 @@ class HTTPClient:
                 'message': str(e),
                 'elapsed_ms': (time.time() - start_time) * 1000
             }
+        finally:
+            for file_handle in opened_files:
+                file_handle.close()
 
 
 class ResponsePrinter:
@@ -293,6 +316,12 @@ def main():
   
   # 添加查询参数
   python http_client.py GET https://api.example.com/search -q "keyword:python" -q "page:1"
+
+    # multipart/form-data（普通字段）
+    python http_client.py POST https://httpbin.org/post -F "name:copilot" -F "env:dev"
+
+    # multipart/form-data（含文件）
+    python http_client.py POST https://httpbin.org/post -F "meta:demo" --form-file "file:tools/http_client.py"
   
   # 保存请求配置
   python http_client.py GET https://api.example.com/users -H "Auth:token" --save my_request.json
@@ -318,6 +347,10 @@ def main():
                        help="查询参数，格式: 'key:value'，可多次使用")
     parser.add_argument("-d", "--data", help="请求体数据（字符串或JSON）")
     parser.add_argument("-f", "--file", dest="body_file", help="从文件读取请求体")
+    parser.add_argument("-F", "--form", action="append", dest="form",
+                       help="multipart表单字段，格式: 'key:value'，可多次使用")
+    parser.add_argument("--form-file", action="append", dest="form_files",
+                       help="multipart文件字段，格式: 'field:path'，可多次使用")
     
     # 选项
     parser.add_argument("-t", "--timeout", type=int, default=30, help="超时时间（秒），默认30")
@@ -341,6 +374,8 @@ def main():
             args.params = config.get('params', [])
             args.data = config.get('data')
             args.body_file = config.get('body_file')
+            args.form = config.get('form', [])
+            args.form_files = config.get('form_files', [])
             args.timeout = config.get('timeout', 30)
             print(f"{Colors.GREEN}✓ 已从配置文件加载: {args.load}{Colors.RESET}\n")
         except Exception as e:
@@ -355,6 +390,11 @@ def main():
     # 解析请求头和查询参数
     headers = parse_key_value_pairs(args.headers)
     params = parse_key_value_pairs(args.params)
+    form = parse_key_value_pairs(args.form)
+    form_files = parse_key_value_pairs(args.form_files)
+
+    if (form or form_files) and (args.data or args.body_file):
+        print(f"{Colors.YELLOW}⚠ 检测到multipart参数，已忽略 data/body_file{Colors.RESET}")
     
     # 打印请求信息
     print(f"\n{Colors.BOLD}{Colors.CYAN}➜ {args.method} {args.url}{Colors.RESET}")
@@ -362,9 +402,13 @@ def main():
         print(f"{Colors.GRAY}请求头: {headers}{Colors.RESET}")
     if params:
         print(f"{Colors.GRAY}查询参数: {params}{Colors.RESET}")
-    if args.data:
+    if form:
+        print(f"{Colors.GRAY}表单字段: {form}{Colors.RESET}")
+    if form_files:
+        print(f"{Colors.GRAY}表单文件: {form_files}{Colors.RESET}")
+    if args.data and not (form or form_files):
         print(f"{Colors.GRAY}请求体: {args.data[:100]}{'...' if len(args.data) > 100 else ''}{Colors.RESET}")
-    elif args.body_file:
+    elif args.body_file and not (form or form_files):
         print(f"{Colors.GRAY}请求体文件: {args.body_file}{Colors.RESET}")
     
     # 保存配置
@@ -376,6 +420,8 @@ def main():
             'params': args.params or [],
             'data': args.data,
             'body_file': args.body_file,
+            'form': args.form or [],
+            'form_files': args.form_files or [],
             'timeout': args.timeout
         }
         RequestConfig.save_config(config, args.save)
@@ -395,7 +441,9 @@ def main():
             headers=headers or None,
             params=params or None,
             body=args.data,
-            body_file=args.body_file
+            body_file=args.body_file,
+            form=form or None,
+            form_files=form_files or None
         )
         
         # 打印响应
