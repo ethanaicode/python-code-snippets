@@ -13,6 +13,11 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 
+# 响应体文本预览长度限制。
+# 设为 None 表示始终显示完整内容。
+RESPONSE_BODY_MAX_LENGTH: Optional[int] = None  # 例如: 1000
+
+
 class Colors:
     """终端颜色常量
     
@@ -242,9 +247,9 @@ class ResponsePrinter:
         else:
             # 文本输出
             body_text = response['body']
-            if len(body_text) > 5000:
-                print(f"{Colors.YELLOW}(响应体过长，仅显示前5000字符){Colors.RESET}")
-                body_text = body_text[:5000] + "..."
+            if RESPONSE_BODY_MAX_LENGTH is not None and len(body_text) > RESPONSE_BODY_MAX_LENGTH:
+                print(f"{Colors.YELLOW}(响应体过长，仅显示前{RESPONSE_BODY_MAX_LENGTH}字符){Colors.RESET}")
+                body_text = body_text[:RESPONSE_BODY_MAX_LENGTH] + "..."
             print(body_text)
         
         print()  # 空行
