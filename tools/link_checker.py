@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set
 
 import requests
+from requests.utils import requote_uri
 
 
 class Colors:
@@ -80,7 +81,8 @@ def normalize_url(url: str) -> Optional[str]:
     if not cleaned.lower().startswith(("http://", "https://")):
         return None
 
-    return cleaned
+    # 统一转义路径中的空格和中文，避免 requests 因非法字符报错。
+    return requote_uri(cleaned)
 
 
 def extract_urls_from_text(text: str) -> List[str]:
@@ -106,7 +108,30 @@ def load_urls_from_file(file_path: str) -> List[str]:
         raise FileNotFoundError(f"文件不存在: {file_path}")
 
     text = path.read_text(encoding="utf-8", errors="ignore")
-    return extract_urls_from_text(text)
+    urls: List[str] = []
+    seen: Set[str] = set()
+
+    def add_url(candidate: Optional[str]) -> None:
+        if candidate and candidate not in seen:
+            seen.add(candidate)
+            urls.append(candidate)
+
+    # 优先按“整行 URL”读取，兼容文件名里包含空格的场景。
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+
+        normalized_line_url = normalize_url(line)
+        if normalized_line_url:
+            add_url(normalized_line_url)
+            continue
+
+        # 对混合文本（markdown/html/json）再走正则提取。
+        for item in extract_urls_from_text(line):
+            add_url(item)
+
+    return urls
 
 
 def collect_urls(urls: Iterable[Optional[str]], files: Iterable[str], read_stdin: bool) -> List[str]:

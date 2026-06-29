@@ -22,6 +22,7 @@ LinkChecker = link_checker.LinkChecker
 collect_urls = link_checker.collect_urls
 extract_urls_from_text = link_checker.extract_urls_from_text
 load_urls_from_file = link_checker.load_urls_from_file
+normalize_url = link_checker.normalize_url
 parse_status_spec = link_checker.parse_status_spec
 
 
@@ -101,6 +102,31 @@ class LinkCheckerTests(unittest.TestCase):
                 load_urls_from_file(str(file_path)),
                 ["https://example.com", "https://github.com"],
             )
+
+    def test_load_urls_with_spaces_in_filename(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_path = Path(temp_dir) / "urls_with_spaces.txt"
+            file_path.write_text(
+                "https://example.com/files/Illustrator 2015.iso\n"
+                "https://example.com/files/Illustrator CC 2017.iso\n"
+                "https://example.com/files/Illustrator CC 2018.iso\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(
+                load_urls_from_file(str(file_path)),
+                [
+                    "https://example.com/files/Illustrator%202015.iso",
+                    "https://example.com/files/Illustrator%20CC%202017.iso",
+                    "https://example.com/files/Illustrator%20CC%202018.iso",
+                ],
+            )
+
+    def test_normalize_url_quotes_spaces(self):
+        self.assertEqual(
+            normalize_url("https://example.com/file name.zip"),
+            "https://example.com/file%20name.zip",
+        )
 
     def test_collect_urls_merges_inputs(self):
         with tempfile.TemporaryDirectory() as temp_dir:
