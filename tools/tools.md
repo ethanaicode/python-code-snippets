@@ -104,6 +104,37 @@
 
 - [并发基准测试](concurrent_benchmark.py)：基础的异步HTTP并发测试工具。
 
+- [链接有效性检查](link_checker.py)：批量检查链接是否可访问，支持命令行传参、文件读取、并发检查和 JSON 报告导出。
+
+  **功能特点：**
+  - 支持直接传入多个 URL，也支持从文件批量读取
+  - 支持 `HEAD` / `GET` / `OPTIONS` 检查方式
+  - 支持并发批量检查、超时控制、请求头配置
+  - 支持 `--trace-redirects` 控制是否继续追踪重定向后的最终结果
+  - 默认把 2xx/3xx 视为有效，可通过参数自定义有效状态码范围
+  - 支持导出 JSON 报告，便于后续分析
+
+  **使用示例：**
+  ```bash
+  # 直接传 URL
+  python tools/link_checker.py https://example.com https://github.com
+
+  # 使用参数传入多个 URL
+  python tools/link_checker.py -u https://example.com -u https://github.com
+
+  # 从文件读取链接
+  python tools/link_checker.py -f data/urls.txt
+
+  # 自定义并发、超时、请求头
+  python tools/link_checker.py -f data/urls.txt -c 20 -t 5 -H "User-Agent:Mozilla/5.0"
+
+  # 关闭重定向追踪，只看首跳结果
+  python tools/link_checker.py -f data/urls.txt --no-trace-redirects
+
+  # 导出 JSON 报告
+  python tools/link_checker.py -f data/urls.txt --output link_checker_report.json
+  ```
+
 ## 音视频处理
 
 - [音频提取](video_moviepy_extract_audio.py)：从视频中提取音频。
