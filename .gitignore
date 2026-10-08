@@ -10,3 +10,5 @@ downloads/*
 !downloads/.gitkeep
 # Ignore all files in the http_data directory except those that match the pattern *.live.*
 http_data/**/*.live.*
+# Ignore all local markdown files ending with .local.md
+*.local.md
