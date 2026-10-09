@@ -12,3 +12,5 @@ downloads/*
 http_data/**/*.live.*
 # Ignore all local markdown files ending with .local.md
 *.local.md
+# zai company only
+zai/
