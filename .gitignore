@@ -14,3 +14,7 @@ http_data/**/*.live.*
 *.local.md
 # zai company only
 zai/
+# sui.com cookies and output files
+sui/cookies.txt
+sui/output/*
+!sui/output/.gitkeep
