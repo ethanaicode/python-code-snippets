@@ -8,36 +8,9 @@ import json
 import sys
 from pathlib import Path
 
-import requests
+from sui_client import post
 
-BASE_DIR = Path(__file__).resolve().parent
-COOKIE_FILE = BASE_DIR / "cookies.txt"
-URL = "https://www.sui.com/report.rmi"
-
-HEADERS = {
-    "accept": "*/*",
-    "accept-language": "en-US,en;q=0.9",
-    "cache-control": "no-cache",
-    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-    "dnt": "1",
-    "origin": "https://www.sui.com",
-    "pragma": "no-cache",
-    "referer": "https://www.sui.com/report.shtml?r=daily",
-    "user-agent": (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
-    ),
-    "x-requested-with": "XMLHttpRequest",
-}
-
-
-def load_cookie(path: Path = COOKIE_FILE) -> str:
-    if not path.exists():
-        raise FileNotFoundError(f"Cookie 文件不存在: {path}")
-    cookie = " ".join(path.read_text(encoding="utf-8").split())
-    if not cookie:
-        raise ValueError(f"Cookie 文件为空: {path}")
-    return cookie
+PATH = "/report.rmi"
 
 
 def query_report(begin_date: str, end_date: str, mode: str = "daily") -> dict:
@@ -51,9 +24,7 @@ def query_report(begin_date: str, end_date: str, mode: str = "daily") -> dict:
         "pids": 0,
         "note": "",
     }
-    headers = {**HEADERS, "cookie": load_cookie()}
-    resp = requests.post(URL, data=data, headers=headers, timeout=30)
-    resp.raise_for_status()
+    resp = post(PATH, data)
     try:
         return resp.json()
     except ValueError:
