@@ -8,13 +8,21 @@ data/*
 !data/.gitkeep
 downloads/*
 !downloads/.gitkeep
+
 # Ignore all files in the http_data directory except those that match the pattern *.live.*
 http_data/**/*.live.*
+
 # Ignore all local markdown files ending with .local.md
 *.local.md
+
 # zai company only
 zai/
+
 # sui.com cookies and output files
 sui/cookies.txt
 sui/output/*
 !sui/output/.gitkeep
+
+# ossutil output files
+ossutil_output/*
+!ossutil_output/.gitkeep
