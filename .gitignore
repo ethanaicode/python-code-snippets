@@ -17,6 +17,7 @@ http_data/**/*.live.*
 
 # zai company only
 zai/
+sui/
 
 # sui.com cookies and output files
 sui/cookies.txt
